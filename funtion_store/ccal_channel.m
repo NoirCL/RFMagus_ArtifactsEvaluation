@@ -1,11 +1,11 @@
 function [g1, g2, g3, g4,...
           u1, u2, u3, u4, ...
           h12, h13, h14, h23, h24, h34, ...
-          Los] = ccal_channel_multi_rx(K_dB_channel, K_dB_Los, ...
+          Los] = ccal_channel(K_dB_channel, K_dB_Los, ...
                                     N_g1, N_g2, N_g3, N_g4, ...
                                     N_u1, N_u2, N_u3, N_u4, ...
                                     N_h12, N_h13, N_h14, N_h23, N_h24, N_h34,...
-                                    N_Los) 
+                                    N_Los, p1, p2, p3, p4) 
     global dis_g1
     global dis_g2
     global dis_g3
@@ -21,7 +21,12 @@ function [g1, g2, g3, g4,...
     global dis_u3
     global dis_u4
     global dis_Los
+    global Los
     global MTS_ele_num
+
+    global g1 g2 g3 g4Los
+    global u1 u2 u3 u4
+    global h12 h13 h14 h23 h24 h34 flag_ris_num MTS_ele_num
     
     g1 = rreshape(rice_matrix(cal_g1(N_g1), K_dB_channel, MTS_ele_num, MTS_ele_num), 1, MTS_ele_num*MTS_ele_num);
     g2 = rreshape(rice_matrix(cal_g2(N_g2), K_dB_channel, MTS_ele_num, MTS_ele_num), 1, MTS_ele_num*MTS_ele_num);
@@ -38,6 +43,11 @@ function [g1, g2, g3, g4,...
     h24 = rice_matrix(cal_h24(N_h24), K_dB_channel, MTS_ele_num*MTS_ele_num,MTS_ele_num*MTS_ele_num);
     h34 = rice_matrix(cal_h34(N_h34), K_dB_channel, MTS_ele_num*MTS_ele_num,MTS_ele_num*MTS_ele_num);
     Los = rice_matrix(cal_Los(N_Los), K_dB_Los, 1 ,1);
+
+    %% Redundant channel deletion.
+    % Sometimes, we may not define all four metasurfaces to work simultaneously. Therefore, when a certain metasurface is not present, 
+    % the corresponding channels related to that metasurface should be removed from the system.
+    ban_channel(p1, p2, p3, p4);
 end
 
 %% Calculate the channel h12.

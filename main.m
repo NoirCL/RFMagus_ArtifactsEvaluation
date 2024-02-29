@@ -195,27 +195,16 @@ N_h34 = 2;
 N_Los = 2;
 
 % Channel calculation.
-[g1, g2, g3, g4,...
-     u1, u2, u3, u4, ...
-     h12, h13, h14, h23, h24, h34, ... 
-     Los] = ccal_channel_multi_rx(K_dB_channel, K_dB_Los, ...
+ccal_channel(K_dB_channel, K_dB_Los, ...
                                N_g1, N_g2, N_g3, N_g4, ...
                                N_u1, N_u2, N_u3, N_u4, ...
                                N_h12, N_h13, N_h14, N_h23, N_h24, N_h34,...
-                               N_Los);
+                               N_Los, p1, p2, p3, p4);
 
 
 
 % Should a radiation pattern be plotted?
 flag_need_dir_graph  = 1;
-
-%% Determine the number of metasurfaces.
-cal_mts_number(p1, p2, p3, p4);
-
-%% Redundant channel deletion.
-% Sometimes, we may not define all four metasurfaces to work simultaneously. Therefore, when a certain metasurface is not present, 
-% the corresponding channels related to that metasurface should be removed from the system.
-ban_channel();
 
 %% discrete Alternate optimization.
 [phi1, phi2, phi3, phi4, phi1_d, phi2_d, phi3_d, phi4_d] = AO_4_ris_discrete;
